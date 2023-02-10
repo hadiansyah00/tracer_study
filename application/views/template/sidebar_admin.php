@@ -48,24 +48,24 @@ $notif_kontak = $this->db->get_where('kontak', ['status' => 1])->num_rows();
         </li>
 
         <!-- Nav Item - Pages Collapse Menu -->
-        <!-- <?php if ($menu == 'menu-1') : ?>
+        <?php if ($menu == 'menu-1') : ?>
             <li class="nav-item active">
             <?php else : ?>
             <li class="nav-item">
             <?php endif; ?>
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-fw fa-users"></i>
-                <span>siswa</span>
+                <span>Alumni</span>
             </a>
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Pilih menu:</h6>
-                    <a class="collapse-item" href="<?= base_url('admin/daftar_siswa'); ?>">Data siswa</a>
-                    <a class="collapse-item" href="<?= base_url('admin/tambah_siswa'); ?>">Pendaftaran siswa</a>
+                    <a class="collapse-item" href="<?= base_url('admin/daftar_alumni'); ?>">Data Alumni</a>
+                    <a class="collapse-item" href="<?= base_url('admin/tambah_siswa'); ?>">Pendaftaran Alumni</a>
 
                 </div>
             </div>
-            </li> -->
+            </li>
 
             <!-- <?php if ($menu == 'menu-9') : ?>
                 <li class="nav-item active">

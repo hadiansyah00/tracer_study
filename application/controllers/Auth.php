@@ -13,24 +13,24 @@ class Auth extends CI_Controller
     public function index()
     {
         if ($this->session->userdata('nis')) {
-            redirect('siswa');
+            redirect('dashboard_alumni');
         }
 
-        $this->form_validation->set_rules('nis', 'Nomor', 'trim|required');
-        $this->form_validation->set_rules('password', 'Password', 'trim|required');
+        // $this->form_validation->set_rules('nis', 'Nomor', 'trim|required');
+        // $this->form_validation->set_rules('password', 'Password', 'trim|required');
 
-        if ($this->form_validation->run() == false) {
+        // if ($this->form_validation->run() == false) {
 
-            $data['title'] = 'Login siswa';
-            $data['web'] =  $this->db->get('website')->row_array();
+        //     $data['title'] = 'Login siswa';
+        //     $data['web'] =  $this->db->get('website')->row_array();
 
-            $this->load->view('template/auth_header', $data);
-            $this->load->view('auth/login');
-            $this->load->view('template/auth_footer');
-        } else {
-            // validasinya success
-            $this->_login();
-        }
+        //     $this->load->view('template/auth_header', $data);
+        //     $this->load->view('auth/login');
+        //     $this->load->view('template/auth_footer');
+        // } else {
+        //     // validasinya success
+        //     $this->_login();
+        // }
     }
 
     public function admin()

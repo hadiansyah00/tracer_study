@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class siswa extends CI_Controller
+class Dashboard_alumni extends CI_Controller
 {
     public function __construct()
     {
@@ -15,13 +15,11 @@ class siswa extends CI_Controller
     public function index()
     {
         $data['menu'] = '';
-        $data['title'] = 'Dashboard';
+        $data['title'] = 'Dashboard | Tracer Studi STIKes Bogor Husada';
         $data['user'] = $this->db->get_where('siswa', ['nim' => $this->session->userdata('nim')])->row_array();
         $data['web'] =  $this->db->get('website')->row_array();
         $id_siswa = $data['user']['id'];
-
-        $data['majors'] =  $this->db->get_where("data_jurusan", ['id' => $data['user']['id_majors']])->row_array();
-        
+        $data['majors'] =  $this->db->get_where("data_jurusan", ['id' => $data['user']['id_majors']])->row_array();   
         $data['sum_siswa'] = $this->db->get("siswa")->num_rows();
         $data['sum_pendidikan'] = $this->db->get("data_pendidikan")->num_rows();
         $data['sum_kelas'] = $this->db->get("data_kelas")->num_rows();
@@ -44,7 +42,7 @@ class siswa extends CI_Controller
         $this->load->view('template/header', $data);
         $this->load->view('template/sidebar', $data);
         $this->load->view('template/topbar', $data);
-        $this->load->view('siswa/index', $data);
+        $this->load->view('alumni/index', $data);
         $this->load->view('template/footer');
     }
 

@@ -3,8 +3,8 @@
 function is_logged_in()
 {
     $ci = get_instance();
-    if (!$ci->session->userdata('nis')) {
-        redirect('auth');
+    if (!$ci->session->userdata('nim')) {
+        redirect('alumni');
     } else {
         $queryMenu = $ci->db->get_where('siswa')->row_array();
         $role_id = $queryMenu['role_id'];

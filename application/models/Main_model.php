@@ -34,7 +34,7 @@ class Main_model extends CI_Model
         // Initialize Array with fetched data
         $data = array();
         foreach ($siswa as $user) {
-            $data[] = array("id" => $user['id'], "text" => $user['nis'] . ' | ' . $user['nama']);
+            $data[] = array("id" => $user['id'], "text" => $user['nim'] . ' | ' . $user['nama']);
         }
         return $data;
     }
@@ -74,7 +74,7 @@ class Main_model extends CI_Model
         // Initialize Array with fetched data
         $data = array();
         foreach ($siswa as $user) {
-            $data[] = array("id" => $user['nama'], "text" => $user['nis'] . ' | ' . $user['nama']);
+            $data[] = array("id" => $user['nama'], "text" => $user['nim'] . ' | ' . $user['nama']);
         }
         return $data;
     }
@@ -91,7 +91,7 @@ class Main_model extends CI_Model
         // Initialize Array with fetched data
         $data = array();
         foreach ($siswa as $user) {
-            $data[] = array("id" => $user['nama'], "text" => $user['nis'] . ' | ' . $user['nama']);
+            $data[] = array("id" => $user['nama'], "text" => $user['nim'] . ' | ' . $user['nama']);
         }
         return $data;
     }

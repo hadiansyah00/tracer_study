@@ -175,7 +175,24 @@ class Get extends CI_Controller
             }
         }
     }
-
+ public function get_prodi()
+    {
+        $prodi = $this->input->post('prodi');
+        if (isset($prodi)) {
+            $this->db->where('id_pend', $pendidikan);
+            $query  =  $this->db->get('data_jurusan');
+            $result =  $query->result_array();
+            if (isset($result[0]) && is_array($result)) {
+                $options = '';
+                $options .= '<option selected value="">- Pilih Prodi -</option>';
+                foreach ($result as $value) {
+                    $options  .= '<option value="' . $value['id'] . '">' .
+                        $value['nama'] . '</option>';
+                }
+                echo $options;
+            }
+        }
+    }
     public function get_kelas_ajax()
     {
         $f = $this->input->get(NULL, TRUE);

@@ -32,7 +32,7 @@
             <div class="modal-body">Pilih <b>Keluar</b> jika kamu ingin keluar dari sistem</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
-                <a class="btn btn-danger" href="<?= base_url('auth/logout') ?>"><i class="fas fa-fw fa-sign-out-alt"></i> Keluar</a>
+                <a class="btn btn-danger" href="<?= base_url('alumni/logout') ?>"><i class="fas fa-fw fa-sign-out-alt"></i> Keluar</a>
             </div>
         </div>
     </div>

@@ -111,8 +111,8 @@ class Admin extends CI_Controller
         if ($data['user']['role_id'] !== '1') {
             $this->db->where_in('id_kelas', $id_kelas);
         }
-        $this->db->where('point !=', 100);
-        $this->db->order_by('point', 'ASC');
+        // $this->db->where('point !=', 100);
+        // $this->db->order_by('point', 'ASC');
         $data['siswa'] = $this->db->get('siswa', 7)->result_array();
         $this->db->where('jumlah !=', 0);
         $this->db->order_by('jumlah', 'DESC');
@@ -214,21 +214,20 @@ class Admin extends CI_Controller
     public function daftar_siswa()
     {
         $data['menu'] = 'menu-1';
-        $data['title'] = 'Daftar siswa';
+        $data['title'] = 'Daftar Alumni';
         $data['user'] = $this->db->get_where('karyawan', ['email' => $this->session->userdata('email')])->row_array();
         $data['web'] =  $this->db->get('website')->row_array();
         $id_peng = $data['user']['id'];
         $data_kelas = $this->db->get_where('data_kelas', ['id_peng' => $id_peng])->result_array();
 
         $id_kelas = array_column($data_kelas, "id");
-
         $filter   = $this->input->post('filter');
         $id_prov     = $this->input->post('prov');
         $kab      = $this->input->post('kab');
 
         $prov = $this->db->get_where('provinsi', ['id_prov' => $id_prov])->row_array();
-
         $this->db->order_by('nama', 'asc');
+
         $data['prov'] = $this->db->get('provinsi')->result_array();
         $data['kab'] = $this->db->get('kabupaten')->result_array();
 
@@ -320,7 +319,7 @@ class Admin extends CI_Controller
                             $data = array(
                                 'point'         => '100',
                                 'nik'           => $cells[0],
-                                'nis'           => $cells[1],
+                                'nim'           => $cells[1],
                                 'nama'          => $cells[2],
                                 'email'         => $cells[3],
                                 'no_hp'         => $cells[4],
@@ -369,7 +368,7 @@ class Admin extends CI_Controller
                       </button>
                       </div>
                       <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                      <strong>Penting!</strong> Password siswa sama dengan <b>NIS</b>
+                      <strong>Penting!</strong> Password siswa sama dengan <b>nim</b>
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -388,11 +387,149 @@ class Admin extends CI_Controller
             }
         }
     }
+ public function daftar_alumni()
+    {
+        $data['menu'] = 'menu-1';
+        $data['title'] = 'Daftar Alumni';
+        $data['user'] = $this->db->get_where('karyawan', ['email' => $this->session->userdata('email')])->row_array();
+        $data['web'] =  $this->db->get('website')->row_array();
+        $data['siswa'] =  $this->db->get('siswa')->result_array();
 
+        $this->load->view('template/header', $data);
+        if ($data['user']['role_id'] !== '1') {
+            $this->load->view('template/sidebar_karyawan', $data);
+        } else {
+            $this->load->view('template/sidebar_admin', $data);
+        }
+        $this->load->view('template/topbar_admin', $data);
+        $this->load->view('admin/daftar_alumni', $data);
+        $this->load->view('template/footer_admin');
+
+
+        if ($this->input->post('submit', TRUE) == 'upload') {
+            $config['upload_path']      = './assets/temp_doc/'; //siapkan path untuk upload file
+            $config['allowed_types']    = 'xlsx|xls'; //siapkan format file
+            $config['file_name']        = 'doc' . time(); //rename file yang diupload
+
+            $this->load->library('upload', $config);
+
+            if ($this->upload->do_upload('excel')) {
+                //fetch data upload
+                $file   = $this->upload->data();
+
+                $reader = ReaderEntityFactory::createXLSXReader(); //buat xlsx reader
+                $reader->open('./assets/temp_doc/' . $file['file_name']); //open file xlsx yang baru saja diunggah
+
+                //looping pembacaan sheet dalam file        
+                foreach ($reader->getSheetIterator() as $sheet) {
+                    $numRow = 1;
+
+                    //siapkan variabel array kosong untuk menampung variabel array data
+                    $save   = array();
+
+                    //looping pembacaan row dalam sheet
+                    foreach ($sheet->getRowIterator() as $row) {
+
+                        if ($numRow > 1) {
+                            //ambil cell
+                            $cells = $row->getCells();
+
+                            $cek_email = $this->db->get_where('siswa', ['email' => $cells[3]]);
+                            $arrr = $this->db->get_where('period', ['period_start' => $cells[18]]);
+                            $period = $arrr->row_array();
+                            if ($arrr->num_rows() !== 1) {
+                                $this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>Error!</strong> Tahun masuk tidak sah.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>');
+                                redirect('admin/daftar_siswa');
+                            }
+                            if ($cek_email->num_rows() == 1) {
+                                $this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>Error!</strong> Siswa dengan Email <b>' . $cells[3] . '</b> sudah terdaftar.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>');
+                                redirect('admin/daftar_siswa');
+                            }
+                            $data = array(
+                                'point'         => '100',
+                                'nik'           => $cells[0],
+                                'nim'           => $cells[1],
+                                'nama'          => $cells[2],
+                                'email'         => $cells[3],
+                                'no_hp'         => $cells[4],
+                                'password'      => password_hash($cells[1], PASSWORD_DEFAULT),
+                                'jk'            => $cells[5],
+                                'ttl'           => $cells[6],
+                                'prov'          => $cells[7],
+                                'kab'           => $cells[8],
+                                'alamat'        => $cells[9],
+                                'nama_ayah'     => $cells[10],
+                                'nama_ibu'      => $cells[11],
+                                'pek_ayah'      => $cells[12],
+                                'pek_ibu'       => $cells[13],
+                                'nama_wali'     => $cells[14],
+                                'pek_wali'      => $cells[15],
+                                'peng_ortu'     => $cells[16],
+                                'no_telp'       => $cells[17],
+                                'thn_msk'       => $period['id'],
+                                'sekolah_asal'  => $cells[19],
+                                'kelas'         => $cells[20],
+                                'status'        => 1,
+                                'role_id'       => 5
+                            );
+
+                            //tambahkan array $data ke $save
+                            array_push($save, $data);
+                        }
+
+                        $numRow++;
+                    }
+
+                    //simpan data ke database
+                    $this->Import_model->simpan($save);
+
+                    //tutup spout reader
+                    $reader->close();
+
+                    //hapus file yang sudah diupload
+                    unlink('./assets/temp_doc/' . $file['file_name']);
+
+                    //tampilkan pesan success dan redirect ulang ke index controller import
+                    $this->session->set_flashdata('message', '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Success!</strong> berhasil mengimport data :)
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                      </div>
+                      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                      <strong>Penting!</strong> Password siswa sama dengan <b>nim</b>
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>');
+                    redirect('admin/daftar_siswa');
+                }
+            } else {
+                //tampilkan pesan error jika file gagal diupload
+                $this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> ' . $this->upload->display_errors() . '
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  </div>');
+                redirect('admin/daftar_siswa');
+            }
+        }
+    }
     public function tambah_siswa()
     {
         $data['menu'] = 'menu-1';
-        $data['title'] = 'Tambah siswa';
+        $data['title'] = 'Tambah Alumni';
         $data['user'] = $this->db->get_where('karyawan', ['email' => $this->session->userdata('email')])->row_array();
         $data['web'] =  $this->db->get('website')->row_array();
 
@@ -406,29 +543,29 @@ class Admin extends CI_Controller
             'is_unique' => 'Nik ini sudah terdaftar!',
             'required' => 'Nik tidak boleh kosong!'
         ]);
-        $this->form_validation->set_rules('nis', 'NIS', 'required|is_unique[siswa.nis]', [
-            'is_unique' => 'Nis ini sudah terdaftar!',
-            'required' => 'Nis tidak boleh kosong!'
+        $this->form_validation->set_rules('nim', 'NIM', 'required|is_unique[siswa.nim]', [
+            'is_unique' => 'nim ini sudah terdaftar!',
+            'required' => 'nim tidak boleh kosong!'
         ]);
         $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
-        $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[siswa.email]', [
-            'is_unique' => 'Email ini sudah terdaftar!',
-            'required' => 'Email tidak boleh kosong!'
-        ]);
-        $this->form_validation->set_rules('jk', 'Jenis Kelamin', 'required');
-        $this->form_validation->set_rules('ttl', 'Tanggal Lahir', 'required');
-        $this->form_validation->set_rules('prov', 'Provinsi', 'required');
-        $this->form_validation->set_rules('kab', 'Kota', 'required');
-        $this->form_validation->set_rules('alamat', 'Alamat', 'required');
-        $this->form_validation->set_rules('nama_ayah', 'Nama Ayah', 'required');
-        $this->form_validation->set_rules('nama_ibu', 'Nama ibu', 'required');
-        $this->form_validation->set_rules('pek_ayah', 'Pekerjaan Ayah', 'required');
-        $this->form_validation->set_rules('pek_ibu', 'Pekerjaan Ibu', 'required');
-        $this->form_validation->set_rules('no_telp', 'Nomor Telepon', 'required');
-        $this->form_validation->set_rules('thn_msk', 'Tahun Masuk', 'required');
-        $this->form_validation->set_rules('sekolah_asal', 'Sekolah Asal', 'required');
-        $this->form_validation->set_rules('pendidikan', 'Pendidikan', 'required');
-        $this->form_validation->set_rules('kelas', 'Kelas', 'required');
+        // $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[siswa.email]', [
+        //     'is_unique' => 'Email ini sudah terdaftar!',
+        //     'required' => 'Email tidak boleh kosong!'
+        // ]);
+        // $this->form_validation->set_rules('jk', 'Jenim Kelamin', 'required');
+        // $this->form_validation->set_rules('ttl', 'Tanggal Lahir', 'required');
+        // $this->form_validation->set_rules('prov', 'Provinsi', 'required');
+        // $this->form_validation->set_rules('kab', 'Kota', 'required');
+        // $this->form_validation->set_rules('alamat', 'Alamat', 'required');
+        // $this->form_validation->set_rules('nama_ayah', 'Nama Ayah', 'required');
+        // $this->form_validation->set_rules('nama_ibu', 'Nama ibu', 'required');
+        // $this->form_validation->set_rules('pek_ayah', 'Pekerjaan Ayah', 'required');
+        // $this->form_validation->set_rules('pek_ibu', 'Pekerjaan Ibu', 'required');
+        // $this->form_validation->set_rules('no_telp', 'Nomor Telepon', 'required');
+        // $this->form_validation->set_rules('thn_msk', 'Tahun Masuk', 'required');
+        // $this->form_validation->set_rules('sekolah_asal', 'Sekolah Asal', 'required');
+        // $this->form_validation->set_rules('pendidikan', 'Pendidikan', 'required');
+        // $this->form_validation->set_rules('kelas', 'Kelas', 'required');
 
         if ($this->form_validation->run() == false) {
             $this->load->view('template/header', $data);
@@ -444,43 +581,29 @@ class Admin extends CI_Controller
 
             $tgl = date('Y-m-d');
             $nama = $this->input->post('nama');
-            $id_prov = $this->input->post('prov');
-            $id_pend = $this->input->post('pendidikan');
+            // $id_prov = $this->input->post('prov');
+            // $id_pend = $this->input->post('pendidikan');
 
-            $provinsi = $this->db->get_where('provinsi', ['id_prov' => $id_prov])->row_array();
-            $pend = $this->db->get_where('data_pendidikan', ['id' => $id_pend])->row_array();
-            if ($pend['majors'] == 1) {
-                $majors = $this->input->post('jurusan');
-            } elseif ($pend['majors'] == 0) {
-                $majors = '';
-            }
+            // $provinsi = $this->db->get_where('provinsi', ['id_prov' => $id_prov])->row_array();
+            // $pend = $this->db->get_where('data_pendidikan', ['id' => $id_pend])->row_array();
+            // if ($pend['majors'] == 1) {
+            //     $majors = $this->input->post('jurusan');
+            // } elseif ($pend['majors'] == 0) {
+            //     $majors = '';
+            // }
 
             $data = [
-                'point'         => '100',
+                // 'point'         => '100',
                 'nik'           => $this->input->post('nik'),
-                'nis'           => $this->input->post('nis'),
+                'nim'           => $this->input->post('nim'),
                 'nama'          => $nama,
-                'email'         => $this->input->post('email'),
-                'password'      => password_hash($this->input->post('nis'), PASSWORD_DEFAULT),
-                'jk'            => $this->input->post('jk'),
-                'ttl'           => $this->input->post('ttl'),
-                'prov'          => $provinsi['nama'],
-                'kab'           => $this->input->post('kab'),
-                'alamat'        => $this->input->post('alamat'),
-                'nama_ayah'     => $this->input->post('nama_ayah'),
-                'nama_ibu'      => $this->input->post('nama_ibu'),
-                'pek_ayah'      => $this->input->post('pek_ayah'),
-                'pek_ibu'       => $this->input->post('pek_ibu'),
-                'nama_wali'     => $this->input->post('nama_wali'),
-                'pek_wali'      => $this->input->post('pek_wali'),
-                'peng_ortu'     => $this->input->post('peng_ortu'),
-                'no_telp'       => $this->input->post('no_telp'),
-                'thn_msk'       => $this->input->post('thn_msk'),
-                'sekolah_asal'  => $this->input->post('sekolah_asal'),
-                'kelas'         => $this->input->post('old_kelas'),
-                'id_pend'       => $id_pend,
-                'id_majors'     => $majors,
-                'id_kelas'      => $this->input->post('kelas'),
+                // 'email'         => $this->input->post('email'),
+                'password'      => password_hash($this->input->post('nim'), PASSWORD_DEFAULT),
+                // 'jk'            => $this->input->post('jk'),
+                // 'ttl'           => $this->input->post('ttl'),
+                // 'prov'          => $provinsi['nama'],
+                // 'kab'           => $this->input->post('kab'),
+                // 'alamat'        => $this->input->post('alamat'),
                 'date_created'  => $tgl,
                 'status'        => 1,
                 'role_id'       => 5
@@ -493,10 +616,69 @@ class Admin extends CI_Controller
            <span aria-hidden="true">&times;</span>
          </button>
           </div>');
-            redirect('admin/daftar_siswa');
+            redirect('admin/daftar_alumni');
         }
     }
+ public function tambah_alumni()
+    {
+        $data['menu'] = 'menu-1';
+        $data['title'] = 'Tambah Alumni';
+        $data['user'] = $this->db->get_where('karyawan', ['email' => $this->session->userdata('email')])->row_array();
+        $data['web'] =  $this->db->get('website')->row_array();
+        $data['prodi'] = $this->db->get('data_jurusan')->result_array();
+        $this->form_validation->set_rules('nik', 'NIK', 'required|is_unique[siswa.nik]', [
+            'is_unique' => 'Nik ini sudah terdaftar!',
+            'required' => 'Nik tidak boleh kosong!'
+        ]);
+        $this->form_validation->set_rules('nim', 'NIM', 'required|is_unique[siswa.nim]', [
+            'is_unique' => 'NIM ini sudah terdaftar!',
+            'required' => 'NIM tidak boleh kosong!'
+        ]);
+        $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
 
+        if ($this->form_validation->run() == false) {
+            $this->load->view('template/header', $data);
+            if ($data['user']['role_id'] !== '1') {
+                $this->load->view('template/sidebar_karyawan', $data);
+            } else {
+                $this->load->view('template/sidebar_admin', $data);
+            }
+            $this->load->view('template/topbar_admin', $data);
+            $this->load->view('admin/tambah_alumni', $data);
+            $this->load->view('template/footer_admin');
+        } else {
+
+            $tgl = date('Y-m-d');
+            $nama = $this->input->post('nama');
+            $id_prodi = $this->input->post('id_prodi');
+            $data = [
+                // 'point'         => '100',
+                'nik'           => $this->input->post('nik'),
+                'nim'           => $this->input->post('nim'),
+                'nama'          => $nama,
+                // 'email'         => $this->input->post('email'),
+                'password'      => password_hash($this->input->post('nim'), PASSWORD_DEFAULT),
+                'id_prodi'      =>$id_prodi,
+                // 'jk'            => $this->input->p   ost('jk'),
+                // 'ttl'           => $this->input->post('ttl'),
+                // 'prov'          => $provinsi['nama'],
+                // 'kab'           => $this->input->post('kab'),
+                // 'alamat'        => $this->input->post('alamat'),
+                'date_created'  => $tgl,
+                'status'        => 1,
+                'role_id'       => 5
+            ];
+
+            $this->db->insert('siswa', $data);
+            $this->session->set_flashdata('message', '<div class="alert alert-success alert-dismissible fade show" role="alert">
+           Data siswa <strong>' . $nama . '</strong> berhasil ditambahkan!
+           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+          </button>
+          </div>');
+            redirect('admin/daftar_alumni');
+        }
+    }
 
     public function daftar_absen()
     {
@@ -718,7 +900,7 @@ class Admin extends CI_Controller
         $data['pendidikan'] =  $this->db->get('data_pendidikan')->result_array();
 
         $this->form_validation->set_rules('siswa', 'siswa', 'required');
-        $this->form_validation->set_rules('jenis', 'Jenis', 'required');
+        $this->form_validation->set_rules('jenim', 'Jenim', 'required');
 
         if ($this->form_validation->run() == false) {
             $this->load->view('template/header', $data);
@@ -732,14 +914,14 @@ class Admin extends CI_Controller
             $this->load->view('template/footer_admin');
         } else {
             $id_san = $this->input->post('siswa');
-            $jenis = $this->input->post('jenis');
+            $jenim = $this->input->post('jenim');
 
             $cek = $this->db->get_where('siswa', ['id' => $id_san])->row_array();
-            $pelang = $this->db->get_where('data_pelanggaran', ['id' => $jenis])->row_array();
+            $pelang = $this->db->get_where('data_pelanggaran', ['id' => $jenim])->row_array();
 
             $data3 = [
                 'id_siswa' => $id_san,
-                'id_pelang' => $jenis,
+                'id_pelang' => $jenim,
                 'tgl' => $this->input->post('tanggal'),
                 'id_pend' => $cek['id_pend'],
                 'id_kelas' => $cek['id_kelas'],
@@ -844,7 +1026,7 @@ class Admin extends CI_Controller
     public function data_pelanggaran()
     {
         $data['menu'] = 'menu-4';
-        $data['title'] = 'Jenis Pelanggaran';
+        $data['title'] = 'Jenim Pelanggaran';
         $data['user'] = $this->db->get_where('karyawan', ['email' => $this->session->userdata('email')])->row_array();
         if ($data['user']['role_id'] !== '1') {
             redirect('admin');
@@ -854,7 +1036,7 @@ class Admin extends CI_Controller
         $this->db->order_by('id', 'DESC');
         $data['data_pelanggaran'] =  $this->db->get('data_pelanggaran')->result_array();
 
-        $this->form_validation->set_rules('jenis', 'Jenis Pelanggaran', 'required');
+        $this->form_validation->set_rules('jenim', 'Jenim Pelanggaran', 'required');
 
         if ($this->form_validation->run() == false) {
             $this->load->view('template/header', $data);
@@ -867,7 +1049,7 @@ class Admin extends CI_Controller
             $this->load->view('admin/data/pelanggaran', $data);
             $this->load->view('template/footer_admin');
         } else {
-            $nama = $this->input->post('jenis');
+            $nama = $this->input->post('jenim');
             $data = [
                 'kode' => $this->input->post('kode'),
                 'nama' => $nama,
@@ -875,7 +1057,7 @@ class Admin extends CI_Controller
             ];
             $this->db->insert('data_pelanggaran', $data);
             $this->session->set_flashdata('message', '<div class="alert alert-success alert-dismissible fade show" role="alert">
-            Data Jenis pelanggaran <strong>' . $nama . '</strong> berhasil ditambahkan :)
+            Data Jenim pelanggaran <strong>' . $nama . '</strong> berhasil ditambahkan :)
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -1240,7 +1422,7 @@ class Admin extends CI_Controller
         $data['pendidikan'] =  $this->db->get('data_pendidikan')->result_array();
 
         $this->form_validation->set_rules('siswa', 'siswa', 'required');
-        $this->form_validation->set_rules('jenis', 'Jenis', 'required');
+        $this->form_validation->set_rules('jenim', 'Jenim', 'required');
 
         if ($this->form_validation->run() == false) {
             $this->load->view('template/header', $data);
@@ -1258,7 +1440,7 @@ class Admin extends CI_Controller
 
             $data = [
                 'id_siswa' => $id_san,
-                'id_izin' => $this->input->post('jenis'),
+                'id_izin' => $this->input->post('jenim'),
                 'keterangan' => $this->input->post('keterangan'),
                 'tgl' => $this->input->post('tanggal'),
                 'expired' => $this->input->post('expired'),
@@ -2480,7 +2662,7 @@ class Admin extends CI_Controller
 
             $data = [
                 'nik' => $this->input->post('nik'),
-                'nis' => $this->input->post('nis'),
+                'nim' => $this->input->post('nim'),
                 'nama' => $nama,
                 'email' => $this->input->post('email'),
                 'no_hp' => $this->input->post('no_hp'),
@@ -2518,7 +2700,53 @@ class Admin extends CI_Controller
         }
     }
 
+ public function update_alumni()
+    {
+        $id      = $this->input->get('id');
+        $data['menu'] = 'menu-1';
+        $data['title'] = 'Update siswa';
+        $data['user'] = $this->db->get_where('karyawan', ['email' => $this->session->userdata('email')])->row_array();
+        $data['web'] =  $this->db->get('website')->row_array();
 
+        $this->db->order_by('nama', 'asc');
+        $data['prov'] = $this->db->get('provinsi')->result_array();
+        $data['pendidikan'] = $this->db->get('data_pendidikan')->result_array();
+        $data['siswa'] =  $this->db->get_where('siswa', ['id' => $id])->row_array();
+        $data['kelas'] = $this->db->get_where('data_kelas', ['id_pend' => $data['siswa']['id_pend']])->result_array();
+        $data['prodi'] = $this->db->get('data_jurusan')->result_array();
+        $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
+
+        if ($this->form_validation->run() == false) {
+            $this->load->view('template/header', $data);
+            if ($data['user']['role_id'] !== '1') {
+                $this->load->view('template/sidebar_karyawan', $data);
+            } else {
+                $this->load->view('template/sidebar_admin', $data);
+            }
+            $this->load->view('template/topbar_admin', $data);
+            $this->load->view('admin/edit_alumni', $data);
+            $this->load->view('template/footer_admin');
+        } else {
+            $nama = $this->input->post('nama');
+            $id_prodi = $this->input->post('id_prodi');
+            $data = [
+                'nik'           => $this->input->post('nik'),
+                'nim'           => $this->input->post('nim'),
+                'nama'          => $nama,
+                'password'      => password_hash($this->input->post('nim'), PASSWORD_DEFAULT),
+                'id_prodi'      =>$id_prodi,
+            ];
+            $this->db->where('id', $id);
+            $this->db->update('siswa', $data);
+            $this->session->set_flashdata('message', '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                    Data siswa <strong>' . $nama . '</strong> berhasil diupdate :)
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>');
+            redirect('admin/update_alumni?id=' . $id . '');
+        }
+    }
 
     public function edit_gallery()
     {
@@ -2838,7 +3066,7 @@ class Admin extends CI_Controller
 
             $data = [
                 'nik' => $this->input->post('nik'),
-                'nis' => $this->input->post('nis'),
+                'nim' => $this->input->post('nim'),
                 'nama' => $this->input->post('nama'),
                 'email' => $this->input->post('email'),
                 'no_hp' => $this->input->post('no_hp'),
@@ -2916,7 +3144,7 @@ class Admin extends CI_Controller
         $data = [
             'point'         => '100',
             'nik'           => $siswa['nik'],
-            'nis'           => $siswa['nis'],
+            'nim'           => $siswa['nim'],
             'nama'          => $nama,
             'email'         => $siswa['email'],
             'password'      => $siswa['password'],
@@ -2978,11 +3206,11 @@ class Admin extends CI_Controller
             $header = [
                 WriterEntityFactory::createCell('No'),
                 WriterEntityFactory::createCell('Nik'),
-                WriterEntityFactory::createCell('Nis'),
+                WriterEntityFactory::createCell('nim'),
                 WriterEntityFactory::createCell('Nama'),
                 WriterEntityFactory::createCell('Email'),
                 WriterEntityFactory::createCell('No Hp'),
-                WriterEntityFactory::createCell('Jenis Kelamin'),
+                WriterEntityFactory::createCell('Jenim Kelamin'),
                 WriterEntityFactory::createCell('Tanggal lahir'),
                 WriterEntityFactory::createCell('Provinsi'),
                 WriterEntityFactory::createCell('Kabupaten'),
@@ -3033,7 +3261,7 @@ class Admin extends CI_Controller
                 //silahkan sobat sesuaikan dengan nama field pada tabel database
                 $siswa    = array(
                     WriterEntityFactory::createCell($no++),
-                    WriterEntityFactory::createCell($key->nis),
+                    WriterEntityFactory::createCell($key->nim),
                     WriterEntityFactory::createCell($key->nik),
                     WriterEntityFactory::createCell($key->nama),
                     WriterEntityFactory::createCell($key->email),
@@ -3508,7 +3736,7 @@ class Admin extends CI_Controller
             'is_unique' => 'Email ini sudah terdaftar!',
             'required' => 'Email tidak boleh kosong!'
         ]);
-        $this->form_validation->set_rules('jk', 'Jenis Kelamin', 'required');
+        $this->form_validation->set_rules('jk', 'Jenim Kelamin', 'required');
         $this->form_validation->set_rules('ttl', 'Tanggal Lahir', 'required');
         $this->form_validation->set_rules('alamat', 'Alamat', 'required');
 
