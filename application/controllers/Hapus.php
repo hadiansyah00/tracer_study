@@ -21,7 +21,19 @@ class Hapus extends CI_Controller
           </div>');
     redirect('admin/daftar_siswa');
   }
+public function hapus_alumni()
+  {
+    $id = $this->input->get('id');
 
+    $this->db->delete('siswa', array('id' => $id));
+    $this->session->set_flashdata('message', '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            Data siswa berhasil dihapus
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          </div>');
+    redirect('admin/daftar_alumni');
+  }
   public function hapus_ppdb()
   {
     $id = $this->input->get('id');

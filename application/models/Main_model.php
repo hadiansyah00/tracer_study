@@ -189,5 +189,13 @@ class Main_model extends CI_Model
 		return $query;
 
     }
+    public function getDataAlumni() {
+
+        $this->db->select('*');
+        $this->db->from('siswa');
+        $this->db->join('data_jurusan','data_jurusan.id = siswa.id_prodi','left');
+        $query = $this->db->get();
+        return $query->result();
+    }
     
 }

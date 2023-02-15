@@ -59,34 +59,35 @@
                                                 } ?> value="P">Perempuan</option>
                                     </select>
                                 </div>
-                       
-                               
-                  
-                                    <div class="card shadow mb-4">
-                                        <div class="card-header py-3">
-                                            <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-university fa-fw"></i> Program Studi</h6>
-                                        </div>
-                                        <div class="card-body">
-                                                <div id="jurus" class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label>Kejuruan</label>
-                                                        <select class="form-control" id="id_prodi" name="id_prodi">
-                                                            <option>- Pilih Prodi -</option>
-                                                            <?php foreach ($prodi as $s) : ?>
+                                
+                            <div class="form-group">
+                                    <label for="nama_prodi" class="col-form-label">Program Studi</label>
+                                    <select class="form-control" id="nama_prodi" name="nama_prodi">
+                                        <option value="">-Pilih Prodi-</option>
+                                        <option <?php if ($siswa['nama_prodi'] == "D3-KEBIDANAN") {
+                                                    echo "selected='selected'";
+                                                } ?> value="L">D3-KEBIDANAN</option>
+                                        <option <?php if ($siswa['nama_prodi'] == "S1-FARMASI") {
+                                                    echo "selected='selected'";
+                                                } ?> value="P">S1-FARMASI</option>
+                                        <option <?php if ($siswa['nama_prodi'] == "S1-GIZI") {
+                                                    echo "selected='selected'";
+                                                } ?> value="P">S1-GIZI</option>
+                                    </select>
+                            </div>
 
-                                                            <option <?php if ($siswa['id_prodi'] == $s['id']) {
-                                                                        echo "selected='selected'";
-                                                                    } ?> value="<?= $s['id'] ?>"><?= $s['nama'] ?></option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                        <?= form_error('id_prodi', '<small class="text-danger pl-3">', ' </small>') ?>
-                                                    </div>
-                                                </div>
+                                <div class="form-group">
+                                    <label>Tahun Masuk</label>
+                                    <input type="text" class="form-control" id="thn_masuk" name="thn_masuk"  value="<?= $siswa['thn_masuk'] ?>">
+                                    <?= form_error('thn_masuk', '<small class="text-danger pl-3">', ' </small>') ?>
+                                </div>
+                               <div class="form-group">
+                                    <label>Tahun Lulus</label>
+                                    <input type="text" class="form-control" id="thn_lulus" name="thn_lulus"  value="<?= $siswa['thn_lulus'] ?>">
+                                    <?= form_error('thn_lulus', '<small class="text-danger pl-3">', ' </small>') ?>
+                                </div>
                                                 
-                                            </div>
-                                        </div>
-                                    </div>
-                           
+                                  
                             </div>
 
                         </div>

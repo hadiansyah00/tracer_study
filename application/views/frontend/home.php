@@ -8,7 +8,7 @@
         <h2 data-aos="fade-up" data-aos-delay="400"><?= $home['isi'] ?></h2>
         <div data-aos="fade-up" data-aos-delay="600">
           <div class="text-center text-sm-start">
-            <a href="<?= base_url($home['link']); ?>" class="btn-get-started scrollto d-inline-flex align-items-center justify-content-center align-self-center">
+            <a href="https://api.whatsapp.com/send?phone=%2B6285336566445&fbclid=IwAR30BW4luVA1P-gSC9ZUrnmde9hTezlCxSJqpH3ZOiJX-5tCPozgWLKUpRo" class="btn-get-started scrollto d-inline-flex align-items-center justify-content-center align-self-center">
               <span><?= $home['tombol'] ?></span>
               <i class="bi bi-arrow-right"></i>
             </a>

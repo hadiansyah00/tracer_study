@@ -49,7 +49,26 @@
                                         <option value="P">Perempuan</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                  <div class="form-group">
+                                    <label for="nama_prodi" class="col-form-label">Program Studi</label>
+                                    <select class="form-control" id="nama_prodi" name="nama_prodi">
+                                        <option value="">- Pilih Program Studi -</option>
+                                        <option value="D3-KEBIDANAN">D3-KEBIDANAN</option>
+                                        <option value="S1-FARMASI">S1-FARMASI</option>
+                                        <option value="S1-GIZI">S1-GIZI</option>
+                                    </select>
+                                </div>
+                                  <div class="form-group">
+                                    <label for="thn_masuk" class="col-form-label">Tahun Masuk</label>
+                                    <input type="number" class="form-control" id="thn_masuk" name="thn_masuk" placeholder="Tahun Masuk Mahsiswa" value="<?= set_value('thn_masuk') ?>" require>
+                                  </div>
+                                  
+                                  <div class="form-group">
+                                    <label for="thn_lulus" class="col-form-label">Tahun Lulus</label>
+                                    <input type="thn_lulus" class="form-control" id="thn_lulus" name="thn_lulus" placeholder="Tahun Lulus Mahsiswa" value="<?= set_value('thn_lulus') ?>" require>
+                                  </div>
+
+                                <!-- <div class="form-group">
                                     <div class="card shadow mb-4">
                                         <div class="card-header py-3">
                                             <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-university fa-fw"></i> Penempatan</h6>
@@ -73,7 +92,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 
                             </div>
 

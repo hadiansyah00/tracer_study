@@ -23,7 +23,7 @@ class Dashboard_alumni extends CI_Controller
         $data['sum_siswa'] = $this->db->get("siswa")->num_rows();
         $data['sum_pendidikan'] = $this->db->get("data_pendidikan")->num_rows();
         $data['sum_kelas'] = $this->db->get("data_kelas")->num_rows();
-
+        $data['acara'] =  $this->db->get('acara', 3)->result_array();
         $data['sum_izin'] = $this->db->get_where("perizinan", ['id_siswa' => $id_siswa])->num_rows();
         $data['sum_takzir'] = $this->db->get_where("pelanggaran", ['id_siswa' => $id_siswa])->num_rows();
 
@@ -44,6 +44,50 @@ class Dashboard_alumni extends CI_Controller
         $this->load->view('template/topbar', $data);
         $this->load->view('alumni/index', $data);
         $this->load->view('template/footer');
+    }
+   public function kusioner()
+    {
+
+        $data['menu'] = 'menu-2';
+        $data['title'] = 'Kusioner';
+        $data['user'] = $this->db->get_where('siswa', ['nim' => $this->session->userdata('nim')])->row_array();
+        $data['web'] =  $this->db->get('website')->row_array();
+        // $id_pend = $data['user']['id_pend'];
+        // $id_kelas = $data['user']['id_kelas'];
+
+        $this->db->order_by('id', 'desc');
+        $data['kusioner'] =  $this->db->get_where('kusioner', ['id_siswa' => $data['user']['id']])->result_array();
+        // $data['data_izin'] =  $this->db->get('data_perizinan')->result_array();
+        $this->form_validation->set_rules('f8', 'f8', 'required');
+  
+        if ($this->form_validation->run() == false) {
+            $this->load->view('template/header', $data);
+            $this->load->view('template/sidebar', $data);
+            $this->load->view('template/topbar', $data);
+            $this->load->view('siswa/perizinan', $data);
+            $this->load->view('template/footer');
+        } else {
+
+            $id_san = $this->input->post('siswa');
+
+            $data = [
+                'id_siswa' => $id_san,
+                'f8' => $this->input->post('f8'),
+                'tgl' => $this->input->post('tanggal'),
+                'expired' => $this->input->post('expired'),
+                'status' => 'Pending',
+            ];
+
+            $this->db->where('id', $id);
+            $this->db->update('kusioner', $data);
+            $this->session->set_flashdata('message', '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            Data perizinan <strong>' . $cek_izin['nama'] . '</strong> berhasil dibuat :)
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          </div>');
+            redirect('siswa/perizinan');
+        }
     }
 
     public function perizinan()

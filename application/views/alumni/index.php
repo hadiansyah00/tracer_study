@@ -6,10 +6,10 @@ $notif_konseling = $this->db->get_where('konseling', ['status' => 'Respon', 'id_
 <div class="container-fluid">
     <?= $this->session->flashdata('message'); ?>
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800"> Selamat Datang di Website<?= $web['nama'] ?></h1>
 
-    </div>
+    </div> -->
 
     <!-- Content Row -->
 
@@ -18,83 +18,35 @@ $notif_konseling = $this->db->get_where('konseling', ['status' => 'Respon', 'id_
 
     <div class="row">
 
-        <!-- Color System -->
-        <div class="col-xl-3 col-lg-4">
-            <div class="row">
-                <div class="col-lg-12 mb-4">
-                    <div class="card bg-primary text-white shadow">
-                        <div class="card-body">
-                            <a href="<?= base_url('siswa/konseling') ?>" style="color:white">E-konseling <?php if ($notif_konseling) : ?><span class="badge badge-danger"><?= $notif_konseling ?></span><?php endif ?></a>
-                            <div class="text-white-50 small">Total :
-                                <span class="badge badge-success"><?= $sum_konsel ?></span>
-                            </div>
+        <div class="col-xl-12 col-lg-8 mx-auto">
+              <section id="recent-blog-posts" class="recent-blog-posts">
 
-                        </div>
-                    </div>
-                </div>
+    <div class="container" data-aos="fade-up">
 
-                <div class="col-lg-12 mb-4">
-                    <div class="card bg-success text-white shadow">
-                        <div class="card-body">
-                            <a href="<?= base_url('siswa/perizinan') ?>" style="color:white">Perizinan <?php if ($notif_izin) : ?><span class="badge badge-danger"><?= $notif_izin ?></span><?php endif ?></a>
-                            <div class="text-white-50 small">Total :
-                                <span class="badge badge-primary"><?= $sum_izin ?></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <header class="section-header">
+        <p>Career Studi STIKes Bogor Husada</p>
+      </header>
 
-                <div class="col-lg-12 mb-4">
-                    <div class="card bg-info text-white shadow">
-                        <div class="card-body">
-                            <a href="<?= base_url('siswa/pelanggaran') ?>" style="color:white">Pelanggaran</a>
-                            <div class="text-white-50 small">Total :
-                                <span class="badge badge-warning"><?= $sum_takzir ?></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <div class="row">
 
+        <?php foreach ($acara as $d) : ?>
+
+          <div class="col-lg-4">
+            <div class="post-box">
+              <div class="post-img"><img style="height: 350px;width: 450px;" src="<?= base_url('assets/'); ?>img/blog/<?= $d['img'] ?>" class="img-fluid" alt=""></div>
+              <span class="post-date"><?= mediumdate_indo(date($d['tgl'])) ?></span>
+              <h3 class="post-title"><?= $d['judul'] ?></h3>
+              <a href="<?= base_url('detail_acara?id=' . $d['id']); ?>" class="readmore stretched-link mt-auto"><span>Selengkapnya</span><i class="bi bi-arrow-right"></i></a>
             </div>
-        </div>
-        <!-- Pie Chart -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Data siswa</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="myPieChart"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-success"></i> Laki - Laki
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> Perempuan
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
+          </div>
 
+        <?php endforeach ?>
 
-        <div class="col-xl-5 col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Profile Website</h6>
-                </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 20rem;" src="<?= base_url('assets/img/' . $about['img']) ?>" alt="">
-                    </div>
-                    <p><?= substr($about['about'], 0, 200) ?>..</p>
-                    <a target="_blank" href="<?= base_url('about') ?>">Lihat Selengkapnya ⇥</a>
-                </div>
-            </div>
+      </div>
+
+    </div>
+
+  </section>
         </div>
 
     </div>

@@ -3,14 +3,14 @@ $notif_izin      = $this->db->get_where('perizinan', ['status' => 'Proses', 'id_
 $notif_konseling = $this->db->get_where('konseling', ['status' => 'Respon', 'id_siswa' => $user['id']])->num_rows();
 ?>
 <!-- Sidebar -->
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-white sidebar sidebar-light accordion shadow-sm" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
         <div class="sidebar-brand-icon">
-            <i aria-hidden="true"><img src="<?= base_url(); ?>assets/img/logo_sbh().png" width="85"></i>
+            <i aria-hidden="true"><img src="<?= base_url(); ?>assets/img/logo_sbh.png" width="85"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">siswa</sup></div>
+        <!-- <div class="sidebar-brand-text mx-3">Tracer Study</sup></div> -->
     </a>
 
     <!-- Divider -->
@@ -18,7 +18,7 @@ $notif_konseling = $this->db->get_where('konseling', ['status' => 'Respon', 'id_
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" href="<?= base_url('siswa') ?>">
+        <a class="nav-link" href="<?= base_url('dashboard_alumni') ?>">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
@@ -31,52 +31,36 @@ $notif_konseling = $this->db->get_where('konseling', ['status' => 'Respon', 'id_
         Menu
     </div>
 
-    <li class="nav-item <?= ($this->uri->segment(2) == 'payout') ? 'active' : '' ?>">
+    <!-- <li class="nav-item <?= ($this->uri->segment(2) == 'payout') ? 'active' : '' ?>">
         <a class="nav-link" href="<?= base_url('siswa/payout'); ?>">
             <i class="fas fa-fw fa-money-bill"></i>
             <span>Data Transaksi </span>
         </a>
+    </li> -->
+    <li class="nav-item <?= ($this->uri->segment(2) == 'payout') ? 'active' : '' ?>">
+        <a class="nav-link" href="<?= base_url('alumni/kusioner'); ?>">
+            <i class="fas fa-fw fa-comments"></i>
+            <span>Form Kusioner  </span>
+        </a>
     </li>
 
-    <?php if ($menu == 'menu-1') : ?>
+    
         <li class="nav-item active">
-        <?php else : ?>
+
         <li class="nav-item">
-        <?php endif; ?>
+
         <a class="nav-link" href="<?= base_url('siswa/konseling'); ?>">
             <i class="fas fa-fw fa-comments"></i>
-            <span>Konseling</span> &nbsp;
-            <?php if ($notif_konseling) : ?>
-                <span class="badge badge-danger" style="font-size: 10px;"><?= $notif_konseling ?></span>
-            <?php endif ?>
+            <span>Career Study</span>
+           
+            
+   
         </a>
         </li>
 
         <!-- Nav Item - Pages Collapse Menu -->
-        <?php if ($menu == 'menu-2') : ?>
-            <li class="nav-item active">
-            <?php else : ?>
-            <li class="nav-item">
-            <?php endif; ?>
-            <a class="nav-link" href="<?= base_url('siswa/perizinan') ?>">
-                <i class="fas fa-fw fa-sticky-note"></i>
-                <span>Perizinan</span> &nbsp;
-                <?php if ($notif_izin) : ?>
-                    <span class="badge badge-danger" style="font-size: 10px;"><?= $notif_izin ?></span>
-                <?php endif ?>
-            </a>
-            </li>
+       
 
-            <?php if ($menu == 'menu-5') : ?>
-                <li class="nav-item active">
-                <?php else : ?>
-                <li class="nav-item">
-                <?php endif; ?>
-                <a class="nav-link" href="<?= base_url('siswa/pelanggaran'); ?>">
-                    <i class="fas fa-fw fa-ban"></i>
-                    <span>Pelanggaran</span>
-                </a>
-                </li>
                 <!-- Divider -->
                 <hr class="sidebar-divider">
 

@@ -15,7 +15,7 @@ class Alumni extends CI_Controller
         if ($this->session->userdata('nim')) {
             redirect('dashboard_alumni');
         }
-
+        
         $this->form_validation->set_rules('nim', 'Nomor', 'trim|required');
         $this->form_validation->set_rules('password', 'Password', 'trim|required');
 

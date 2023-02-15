@@ -650,7 +650,7 @@ class Admin extends CI_Controller
 
             $tgl = date('Y-m-d');
             $nama = $this->input->post('nama');
-            $id_prodi = $this->input->post('id_prodi');
+            // $id_prodi = $this->input->post('id_prodi');
             $data = [
                 // 'point'         => '100',
                 'nik'           => $this->input->post('nik'),
@@ -658,8 +658,11 @@ class Admin extends CI_Controller
                 'nama'          => $nama,
                 // 'email'         => $this->input->post('email'),
                 'password'      => password_hash($this->input->post('nim'), PASSWORD_DEFAULT),
-                'id_prodi'      =>$id_prodi,
-                // 'jk'            => $this->input->p   ost('jk'),
+                // 'id_prodi'      =>$id_prodi,
+                'jk'            => $this->input->post('jk'),
+                'thn_masuk'            => $this->input->post('thn_masuk'),
+                'thn_lulus'            => $this->input->post('thn_lulus'),
+                'nama_prodi'            => $this->input->post('nama_prodi'),
                 // 'ttl'           => $this->input->post('ttl'),
                 // 'prov'          => $provinsi['nama'],
                 // 'kab'           => $this->input->post('kab'),
@@ -2734,7 +2737,9 @@ class Admin extends CI_Controller
                 'nim'           => $this->input->post('nim'),
                 'nama'          => $nama,
                 'password'      => password_hash($this->input->post('nim'), PASSWORD_DEFAULT),
-                'id_prodi'      =>$id_prodi,
+                'nama_prodi'          => $this->input->post('nama_prodi'),
+                'thn_masuk'           => $this->input->post('thn_masuk'),
+                'thn_lulus'           => $this->input->post('thn_lulus'),
             ];
             $this->db->where('id', $id);
             $this->db->update('siswa', $data);

@@ -2,7 +2,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-
             <div class="card shadow mb-4">
                 <div class="card-body">
                     <h4 class="mb-5 header-title"><i class="fas fa-list"></i> <?= $title ?>
@@ -13,19 +12,18 @@
                                 <label>Tambah Alumni</label>
                                 <a href="<?= base_url('admin/tambah_alumni'); ?>" class="btn btn-block btn-info"><i class="fa fa-plus-circle"></i> Pendaftaran Alumni</a>
                             </div>
-                        
                 </div>
-
-             
-
-                <div style="width:100%; overflow-x:scroll">
+                <div class="container-fluid">
                     <table class="table table-hover display" id="mytable" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>\
                                 <th scope="col">NIM</th>
                                 <th scope="col">Nama Lengkap</th>
-                                <th scope="col">Program Study</th>
+                                <th scope="col">Jenis Kelamin</th>
+                                <th scope="col">Prog. Study</th>
+                                <th scope="col">Tahun Masuk</th>
+                                <th scope="col">Tahun Lulus</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -37,8 +35,12 @@
                                     <th scope="row"><?= $i ?></th>
                                     <td width="100"><?= $d['nim'] ?></td>
                                     <td width="200"><?= $d['nama'] ?></td>
-                                    <td width="100"><?= $d['id_prodi'] ?></td>               
+                                    <td width="100"><?= ($d['jk'] =='L') ? 'Laki-Laki' :'Perempuan' ?></td>
+                                    <td width="100"><?= $d['nama_prodi'] ?></td>   
+                                    <td width="100"><?= $d['thn_masuk'] ?></td>   
+                                    <td width="100"><?= $d['thn_lulus'] ?></td>              
                                     <td>
+                                        <a >  <i class="fab fa-badge-check"></i></a>
                                         <a href="<?= base_url('admin/update_alumni?id=') ?><?= $d['id'] ?>" class="badge badge-success">Edit</a>
                                         <a href="" class="badge badge-danger" data-toggle="modal" data-target="#deleteData<?= $d['id'] ?>">Hapus</a>
                                     </td>
@@ -68,7 +70,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                            <a href="<?= base_url('hapus/hapus_siswa?id=') ?><?= $d['id'] ?>" class="btn btn-danger"><i class="fa fa-trash"></i> Hapus</a>
+                            <a href="<?= base_url('hapus/hapus_alumni?id=') ?><?= $d['id'] ?>" class="btn btn-danger"><i class="fa fa-trash"></i> Hapus</a>
                         </div>
 
                     </div>

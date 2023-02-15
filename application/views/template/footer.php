@@ -48,6 +48,13 @@
 <!-- Core plugin JavaScript-->
 <script src="<?= base_url('assets/'); ?>vendor/jquery-easing/jquery.easing.min.js"></script>
 
+  <script src="<?= base_url('assets/'); ?>vendor/bootstrap/js/bootstrap.bundle.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/aos/aos.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/php-email-form/validate.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/purecounter/purecounter.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/glightbox/js/glightbox.min.js"></script>
 
 <!-- Custom scripts for all pages-->
 <script src="<?= base_url('assets/'); ?>js/sb-admin-2.min.js"></script>
@@ -88,6 +95,29 @@
         });
     });
 </script>
+
+
+  <script src="<?= base_url('assets/'); ?>vendor/bootstrap/js/bootstrap.bundle.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/aos/aos.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/php-email-form/validate.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/purecounter/purecounter.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="<?= base_url('assets/'); ?>vendor/glightbox/js/glightbox.min.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="<?= base_url('assets/'); ?>js/main.js"></script>
+
+  <script type="text/javascript">
+    var x = document.getElementById("foter-hide");
+    myFunction(x)
+
+    function myFunction(x) {
+      if (window.matchMedia("(max-width: 700px)").matches) {
+        x.style.display = 'none';
+      }
+    };
+  </script>
 </body>
 
 </html>
